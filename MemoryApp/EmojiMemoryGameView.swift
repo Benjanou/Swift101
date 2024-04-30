@@ -5,36 +5,64 @@
 //
 
 import SwiftUI
+let themeColor = Color(red: 0.5, green: 0.3, blue: 0.5)
 
 struct EmojiMemoryGameView: View {
     @ObservedObject var viewModel: EmojiMemoryGame
-        
     @State var shouldReset = false
     
     var body: some View {
-        ScrollView {
+        
             VStack {
                 Text("Memorize!").font(.largeTitle)
+                    .foregroundColor(.white)
+                Text("Theme: " + viewModel.getTheme())
+                    .foregroundColor(.white)
+                .bold()
+                ZStack {
+                    let base = RoundedRectangle(cornerRadius: 20)
+                    base.frame(minHeight: 100)
+                    base.fill(Color(red: 0.9, green: 0.7, blue: 0.9))
+                    base.strokeBorder(lineWidth: 3)
+                    base.fill(themeColor)
+                        .opacity(0)
+                    
+                    ScrollView {
+                        cards
+                            .animation(.default, value: viewModel.cards)
+                    }
+                    .padding(.bottom, 3)
+                    .padding(.top, 3)
+                    .clipShape(RoundedRectangle(cornerRadius: 29))
+                    
+                }
                 
-                cards
-                    .animation(.default, value: viewModel.cards)
-                Button("Shuffle"){ viewModel.shuffle()}
+                Button(action:{ viewModel.startNewGame()}){
+                    Text("New Game")
+                        .foregroundColor(.white)
+                        .padding(5)
+                }
+                .background(themeColor)
+                .cornerRadius(6)
             }.padding()
-        }
+            .background(themeColor.brightness(-0.3).edgesIgnoringSafeArea(.all))
     }
+    
 
     var cards: some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 85), spacing: 0)], spacing: 0) {
             ForEach(viewModel.cards) {card in
-                CardView(card)
+                if !(card.isMatched && !card.isFaceUp) {
+                    CardView(card)
                         .aspectRatio(2/3, contentMode: .fit)
                         .padding(4)
                         .onTapGesture {
                             viewModel.choose(card)
                         }
+                }
             }
         }
-        .foregroundColor(.orange)
+        .foregroundColor(themeColor)
     }
 }
 
@@ -60,7 +88,7 @@ struct CardView: View {
                     .aspectRatio(1, contentMode: .fit)
             }
                 .opacity(card.isFaceUp ? 1 : 0)
-            base.fill(.green)
+            base.fill(themeColor)
                 .opacity(card.isFaceUp ? 0 : 1)
         }
         .opacity((card.isFaceUp || !card.isMatched) ? 1 : 0)

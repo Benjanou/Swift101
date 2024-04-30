@@ -8,22 +8,41 @@
 import SwiftUI
 
 class EmojiMemoryGame: ObservableObject {
-    private static let emojis = ["🚗","🚀","⛵️","🚕","🚂","🚁","🚑"]
+    private static let emojisLibrary: [String: [String]] = ["vehicles" : ["🚗","🚀","⛵️","🚕","🚂","🚁","🚑"],
+                                                     "plants" : ["🌱","🌵","🌾","🍀","🌳","🌷"],
+                                                     "clothes": ["🩲","🩳","👔","👖","🧦","🥾","👠","👗"],
+                                                     "animals": ["🐶","🐵","🦁","🦊","🐰","🐹","🐭","🐱","🐻","🐼"],
+                                                     "fruits": ["🍏","🍓","🍇","🍊","🍐","🍌","🍑","🍒","🍍","🫐"],
+                                                     "flags": ["🏳️‍🌈","🇮🇱","🇵🇹","🇺🇸","🇿🇦","🇲🇦","🇷🇸"]
+                                                    ]
     
-    private static func createMemoryGame() -> MemoryGame<String> {
-        return MemoryGame<String>(numberOfPairsOfCards: 14) {pairIndex in
-            if emojis.indices.contains(pairIndex) {
-                return emojis[pairIndex]
-            } else {
-                return "⁉️"
-            }
-        }
+    @Published private var model: MemoryGame<String>!
+    
+    private var selectedThemeName : String!
+    
+    init() {
+        startNewGame()
     }
     
-    @Published private var model = createMemoryGame()
+    func startNewGame(){
+        let randomElement = EmojiMemoryGame.emojisLibrary.randomElement()!
+        selectedThemeName = randomElement.key
+        model = EmojiMemoryGame.createMemoryGame(with: selectedThemeName)
+    }
+    
+    private static func createMemoryGame(with themeName: String) -> MemoryGame<String> {
+        let emojis = emojisLibrary[themeName]!
+        
+        return MemoryGame<String>(numberOfPairsOfCards: emojis.count) {pairIndex in emojis[pairIndex]}
+        
+    }
     
     func shuffle(){
         model.shuffle()
+    }
+    
+    func getTheme() -> String{
+        return selectedThemeName
     }
     
     var cards: Array<MemoryGame<String>.Card> {
