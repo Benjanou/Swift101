@@ -14,11 +14,21 @@ struct EmojiMemoryGameView: View {
     var body: some View {
         
             VStack {
-                Text("Memorize!").font(.largeTitle)
-                    .foregroundColor(.white)
-                Text("Theme: " + viewModel.getTheme())
-                    .foregroundColor(.white)
-                .bold()
+                HStack {
+                    Spacer()
+                    VStack {
+                        Text("Memorize!")
+                            .font(.largeTitle)
+                            .foregroundColor(.white)
+                        Text("Theme: " + viewModel.getTheme())
+                            .foregroundColor(.white)
+                            .bold()
+                    }
+                    Spacer()
+                    Text("score: " + viewModel.getScore())
+                            .font(.title3)
+                            .foregroundColor(.white)
+                }
                 ZStack {
                     let base = RoundedRectangle(cornerRadius: 20)
                     base.frame(minHeight: 100)

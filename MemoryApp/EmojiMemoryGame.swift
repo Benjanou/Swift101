@@ -45,6 +45,10 @@ class EmojiMemoryGame: ObservableObject {
         return selectedThemeName
     }
     
+    func getScore() -> String{
+        return "\(model.score)"
+    }
+    
     var cards: Array<MemoryGame<String>.Card> {
         return model.cards
         
