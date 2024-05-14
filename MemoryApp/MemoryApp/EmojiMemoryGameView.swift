@@ -16,7 +16,7 @@ struct EmojiMemoryGameView: View {
             VStack {
                 HStack {
                     Spacer()
-                    VStack {
+                    VStack(alignment: .center) {
                         Text("Memorize!")
                             .font(.largeTitle)
                             .foregroundColor(.white)
@@ -25,9 +25,18 @@ struct EmojiMemoryGameView: View {
                             .bold()
                     }
                     Spacer()
-                    Text("score: " + viewModel.getScore())
-                            .font(.title3)
+                    
+                    Circle().overlay(
+                        Text("score: " + viewModel.getScore())
+                            //.font(.largeTitle)
                             .foregroundColor(.white)
+                    )
+                        
+                        .foregroundColor(themeColor)
+                        .frame(width: 70, height: 70)
+                    
+                    Spacer()
+                            
                 }
                 ZStack {
                     let base = RoundedRectangle(cornerRadius: 20)
